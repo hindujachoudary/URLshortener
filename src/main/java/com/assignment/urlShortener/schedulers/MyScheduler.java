@@ -11,7 +11,7 @@ public class MyScheduler {
     @Autowired
     private MyService myService;
 
-    @Scheduled(cron="0 1 * * * *")
+    @Scheduled(cron="0 * * * * *")
     public void remove30DaysOldEntries(){
         System.out.println("Deleted");
         myService.deleteOld();
