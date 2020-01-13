@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8" />
+    <title>Url Shortener</title>
+</head>
+<body>
+    <center>
+        <div class="status"></div>
+        <br><br><br><br><br><br><br><br><br><br><br><br>
+        <table>
+            <tr>
+                <th align="left">
+                    Enter your Long URL:
+                </th>
+                <th>
+                    <input type="text" class="longUrl" name="longUrl" style="width:400px" />
+                </th>
+                <th>
+                    <input type="button" id="getShortUrl" value="Shorten It" style="width:100px" />
+                </th>
+            </tr>
+            <tr>
+                <th align="left">
+                    Short Url:
+                </th>
+                <th>
+                    <input type="text" class="shortUrl" name="shortUrl" style="width:400px" />
+                </th>
+                <th>
+                    <input type="button" id="getLongUrl" value="Get back Original" style="width:100px"/>
+                </th>
+            </tr>
+            <tr>
+                <th align="left">
+                    Enter the short URL to be removed:
+                </th>
+                <th>
+                    <input type="text" class="removeUrl" name="removeUrl" style="width:400px" />
+                </th>
+                <th>
+                    <input type="button" id="removeUrl" value="Remove It" style="width:100px"/>
+                </th>
+            </tr>
+        </table>
+    </center>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $("#getShortUrl").click(function(e) {
+            e.preventDefault();
+            var longUrl = $(".longUrl").val();
+            if (longUrl.length == 0) {
+                $(".status").text("Enter a Valid Long URL");
+                return;
+            }
+            var obj = {longUrl: longUrl};
+            $.ajax({
+                url: 'http://localhost:8080/create',
+                type: 'POST',
+                headers:{"Content-type": "application/json"},
+                data: JSON.stringify(obj),
+                success: function (res) {
+                            $(".status").text("The short Url is [" + res + "]");
+                        }
+            })
+        })
+
+        $("#getLongUrl").click(function(e) {
+            e.preventDefault();
+            var raw = $(".shortUrl").val();
+            var ind = raw.indexOf("shortener.com/");
+            var shortUrl = raw.substring(ind + 14);
+            $.ajax({
+                url: 'http://localhost:8080/get/' + shortUrl,
+                type: 'GET',
+            }).then(function(res) {
+                $(".status").text("The long Url was [" + res + "]");
+            });
+        })
+
+        $("#removeUrl").click(function(e) {
+            e.preventDefault();
+            var raw = $(".removeUrl").val();
+            var ind = raw.indexOf("shortener.com/");
+            var shortUrl = raw.substring(ind + 14);
+            $.ajax({
+                url: 'http://localhost:8080/remove/' + shortUrl,
+                type: 'DELETE',
+                success: function (res) {
+                    $(".status").text("Removed Successfully!");
+                },
+                error: function (err) {
+                    $(".status").text("Nothing Removed");
+                }
+            })
+        })
+    </script>
+</body>
+</html>
