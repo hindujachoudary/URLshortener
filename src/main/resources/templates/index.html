@@ -46,11 +46,72 @@
     </center>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
+        function isValidURL(url) {
+
+            // const html = fetch(url).text();
+            // console.log(html);
+            // var re = new RegExp('^(https?:\\/\\/)?' + // protocol
+            //     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            //     '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            //     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            //     '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            //     '(\\#[-a-z\\d_]*)?$', 'i');
+            // return re.test(url);
+            fetch(url).then(res => console.log(res));
+            var xhr = new XMLHttpRequest();
+            xhr.setRequestHeader("Origin", "localhost");
+            xhr.open("GET", url);
+            xhr.send();
+            // getPostData(req)
+            //     .then(body => {
+            //         console.log(body);
+            //         let options = {
+            //             uri: query.url,
+            //             headers: body.headers,
+            //             method: body.method || 'GET'
+            //         };
+            //
+            //         let proxyCallback = (proxyErr, proxyRes, proxyBody) => {
+            //             res.writeHead(proxyRes.statusCode, proxyRes.headers);
+            //             res.write(proxyBody);
+            //             res.end();
+            //         };
+            //         request(options, proxyCallback);
+            //     })
+
+            // xhr.onreadystatechange = () => {
+            //     if(xhr.status >= 200 && xhr.status < 400)
+            //         return console.log("HJi");
+            //     console.log("bue");
+            //     return false;
+            // }
+            // $.ajax({
+            //     url: url,
+            //     type: 'GET',
+            //     success: function (res) {
+            //         debugger;
+            //         return true;
+            //     },
+            //     error: function (res) {
+            //         debugger;
+            //         return false;
+            //     }
+            // });
+            // return true;
+        }
         $("#getShortUrl").click(function(e) {
             e.preventDefault();
             var longUrl = $(".longUrl").val();
             if (longUrl.length == 0) {
                 $(".status").text("Enter a Valid Long URL");
+                return;
+            }
+            if(!isValidURL(longUrl)){
+                $(".status").text("The URL you entered does not exist. Why to even shorten it!?");
+                return;
+            }
+            if(longUrl.length < 20){
+                $(".status").text("The URL you entered is already short enough :)");
                 return;
             }
             var obj = {longUrl: longUrl};
@@ -84,14 +145,23 @@
             var ind = raw.indexOf("shortener.com/");
             var shortUrl = raw.substring(ind + 14);
             $.ajax({
-                url: 'http://localhost:8080/remove/' + shortUrl,
-                type: 'DELETE',
-                success: function (res) {
-                    $(".status").text("Removed Successfully!");
-                },
-                error: function (err) {
+                url: 'http://localhost:8080/get/' + shortUrl,
+                type: 'GET',
+            }).then(function(res) {
+                if (res == "Not Found") {
                     $(".status").text("Nothing Removed");
+                    return;
                 }
+                $.ajax({
+                    url: 'http://localhost:8080/remove/' + shortUrl,
+                    type: 'DELETE',
+                    success: function (res) {
+                        $(".status").text("Removed Successfully!");
+                    },
+                    error: function (err) {
+                        $(".status").text("Nothing Removed");
+                    }
+                })
             })
         })
     </script>
