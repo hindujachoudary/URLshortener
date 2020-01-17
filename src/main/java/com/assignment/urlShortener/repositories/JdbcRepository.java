@@ -18,7 +18,7 @@ public class JdbcRepository implements GlobalRepository {
 //    }
     @Override
     public String get(String shortUrl) {
-        System.out.println("Inside Get and shorUrl = " + shortUrl);
+        System.out.println("JDBC: Inside Get and shorUrl = " + shortUrl);
         String query = "SELECT * FROM Model WHERE short_url='" + shortUrl + "';";
         try {
             return jdbcTemplate.query(query, new ModelMapper()).get(0).getLongUrl();
@@ -30,7 +30,7 @@ public class JdbcRepository implements GlobalRepository {
 
     @Override
     public String getByVal(String longUrl) {
-        System.out.println("Inside getByVal longUrl = " + longUrl);
+        System.out.println("JDBC: Inside getByVal longUrl = " + longUrl);
         String query = "SELECT * FROM Model WHERE long_url='" + longUrl + "';";
 //        System.out.println("====== " + jdbcTemplate.query("SELECT * FROM Model;", new ModelMapper()).toString());
 //
@@ -45,7 +45,7 @@ public class JdbcRepository implements GlobalRepository {
 
     @Override
     public void put(String shortUrl, String longUrl) {
-        System.out.println("Inside put and shorUrl = '" + shortUrl + "' AND longUrl = '" + longUrl);
+        System.out.println("JDBC: Inside put and shorUrl = '" + shortUrl + "' AND longUrl = '" + longUrl);
         String query = "INSERT INTO Model(short_url, long_url, date) VALUES('" + shortUrl + "' , '" + longUrl + "', current_timestamp);";
         jdbcTemplate.update(query);
     }
@@ -58,6 +58,7 @@ public class JdbcRepository implements GlobalRepository {
 
     @Override
     public String getAll() {
+        System.out.println("JDBC: getAll()");
         String query = "SELECT * FROM Model;";
         List<String> ans = new ArrayList<>();
         jdbcTemplate.query(query, new ModelMapper()).forEach(x -> ans.add(x.toString()));

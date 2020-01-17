@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component
+//@Component
 public interface TestingDB extends JpaRepository<Model, String>{
     public boolean existsByLongUrl(String longUrl);
     public Model findByLongUrl(String longUrl);

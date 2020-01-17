@@ -1,6 +1,6 @@
 package com.assignment.urlShortener.repositories;
 
-        import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Component;
 
 @Component
 public interface GlobalRepository {
