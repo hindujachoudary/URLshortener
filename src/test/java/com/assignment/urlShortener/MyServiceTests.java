@@ -34,6 +34,13 @@ class MyServiceTests {
 	}
 
 	@Test
+	public void getSuccessTest() {
+		String longUrl = "https://www.google.co.in/ajshkjahjh8769769JIHKHkjkjbf";
+
+
+	}
+
+	@Test
 	void getShortUrlNotFoundTest() {
 		assertEquals("Not Found", myService.getUrl("asdf"));
 	}
@@ -62,7 +69,6 @@ class MyServiceTests {
 		String shortUrlSample2 = myService.createUrl(longUrlSample); // Second time called for the same longUrl
 		assertEquals(shortUrlSample, shortUrlSample2);
 	}
-
 
 	@Test
 	void deleteAndGetTest() {

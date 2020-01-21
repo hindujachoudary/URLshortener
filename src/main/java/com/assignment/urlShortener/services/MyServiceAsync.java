@@ -51,7 +51,7 @@ public class MyServiceAsync {
         }while(true);
     }
 
-    public CompletionStage<String> getUrl(String shortUrl){
+    public CompletableFuture<String> getUrl(String shortUrl){
         System.out.println("Inside service CreateUrl and longUrl = " + shortUrl);
         return repository.get(shortUrl);
     }

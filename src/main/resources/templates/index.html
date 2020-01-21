@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <title>Url Shortener</title>
@@ -7,6 +7,8 @@
 <body>
     <center>
         <div class="status"></div>
+        <br><br>
+        <div class="link"></div>
         <br><br><br><br><br><br><br><br><br><br><br><br>
         <table>
             <tr>
@@ -50,18 +52,18 @@
 
             // const html = fetch(url).text();
             // console.log(html);
-            // var re = new RegExp('^(https?:\\/\\/)?' + // protocol
-            //     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-            //     '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-            //     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-            //     '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-            //     '(\\#[-a-z\\d_]*)?$', 'i');
-            // return re.test(url);
-            fetch(url).then(res => console.log(res));
-            var xhr = new XMLHttpRequest();
-            xhr.setRequestHeader("Origin", "localhost");
-            xhr.open("GET", url);
-            xhr.send();
+            var re = new RegExp('^(https?:\\/\\/)?' + // protocol
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+                '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+                '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+                '(\\#[-a-z\\d_]*)?$', 'i');
+            return re.test(url);
+            // fetch(url).then(res => console.log(res));
+            // var xhr = new XMLHttpRequest();
+            // xhr.setRequestHeader("Origin", "172.16.152.180");
+            // xhr.open("GET", url);
+            // xhr.send();
             // getPostData(req)
             //     .then(body => {
             //         console.log(body);
@@ -116,12 +118,13 @@
             }
             var obj = {longUrl: longUrl};
             $.ajax({
-                url: 'http://localhost:8080/create',
+                url: 'http://172.16.152.180:8080/create',
                 type: 'POST',
                 headers:{"Content-type": "application/json"},
                 data: JSON.stringify(obj),
                 success: function (res) {
                             $(".status").text("The short Url is [" + res + "]");
+                            $(".link").html("<a target='_blank' href='"+ longUrl +"'>" + longUrl + " </a>");
                         }
             })
         })
@@ -129,23 +132,26 @@
         $("#getLongUrl").click(function(e) {
             e.preventDefault();
             var raw = $(".shortUrl").val();
-            var ind = raw.indexOf("shortener.com/");
-            var shortUrl = raw.substring(ind + 14);
+            var ind = raw.indexOf("172.16.152.180:8080/short/");
+            var shortUrl = raw.substring(ind + 26);
             $.ajax({
-                url: 'http://localhost:8080/get/' + shortUrl,
+                url: 'http://172.16.152.180:8080/get/' + shortUrl,
                 type: 'GET',
             }).then(function(res) {
+                console.log("hi" + shortUrl);
                 $(".status").text("The long Url was [" + res + "]");
+                $(".link").html("<a target='_blank' href='"+ longUrl +"'>" + longUrl + " </a>");
+
             });
         })
 
         $("#removeUrl").click(function(e) {
             e.preventDefault();
             var raw = $(".removeUrl").val();
-            var ind = raw.indexOf("shortener.com/");
-            var shortUrl = raw.substring(ind + 14);
+            var ind = raw.indexOf("172.16.152.180:8080/short/");
+            var shortUrl = raw.substring(ind + 26);
             $.ajax({
-                url: 'http://localhost:8080/get/' + shortUrl,
+                url: 'http://172.16.152.180:8080/get/' + shortUrl,
                 type: 'GET',
             }).then(function(res) {
                 if (res == "Not Found") {
@@ -153,7 +159,7 @@
                     return;
                 }
                 $.ajax({
-                    url: 'http://localhost:8080/remove/' + shortUrl,
+                    url: 'http://172.16.152.180:8080/remove/' + shortUrl,
                     type: 'DELETE',
                     success: function (res) {
                         $(".status").text("Removed Successfully!");
